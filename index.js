@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const app = require('express')();
 const request = require('request');
+const path = require('path');
 require('dotenv/config');
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -39,7 +40,7 @@ app.get('/:newsId', (req, res) => {
             for (var link in json.links) {
                 actualLinks.push({
                     title: link,
-                    url: 'https://sinhvien.bvu.edu.vn/' + json.links[link]
+                    url: getActualLink('https://sinhvien.bvu.edu.vn' + json.links[link])
                 });
 
                 if (actualMessage.includes(link))
@@ -78,4 +79,33 @@ function getNewsDetails(id) {
             }
         });
     });
+}
+
+
+function getActualLink(url) {
+    let ext = path.extname(url).split('.')[1];
+    let result = '';
+
+
+    console.log('ext:', ext);
+    switch (ext) {
+        case 'pdf': {
+            result = `https://docs.google.com/gview?url=${url}`
+            break;
+        }
+
+        case 'doc': case 'docx': 
+        case 'xls': case 'xlsx': 
+        case 'ppt': case 'pptx': {
+            result = `https://view.officeapps.live.com/op/embed.aspx?src=${url}`
+            break;
+        }
+    
+        default:
+            result = url;
+    }
+
+
+    console.log(result);
+    return result;
 }
