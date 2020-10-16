@@ -3,16 +3,15 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const app = require('express')();
 const request = require('request');
-
+require('dotenv/config');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
-
 app.set('view engine', 'ejs');
 
 
-const PORT = 5500;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log('Listening on port: ', PORT);
     console.log('Open browser on: http://localhost:' + PORT);
